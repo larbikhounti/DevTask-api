@@ -3,9 +3,8 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
-import { SignInRequestDto } from '../dtos/signInRequest.dto';
+import { SignInRequestDto, SignInResponseDto } from '../dtos/auth.dto';
 import { Helpers } from 'src/helpers/helper.helpers';
-import { SignInResponseDto } from '../dtos/signinResponse.dto';
 
 @Injectable()
 export class AuthService {
