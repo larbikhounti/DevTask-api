@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorator/public.decorator';
 import { Reflector } from '@nestjs/core';
+import { promises } from 'dns';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -37,14 +38,17 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
-        token,
-        {
-          secret: this.configService.get<string>('SECRET')
-        }
-      );
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
+      const refreshToken = this.extractTokenFromCookie(request);
+      if (!refreshToken) {
+        throw new UnauthorizedException('Refresh token not found');
+      }
+      await this.verifyRefreshToken(refreshToken);
+
+      const payload = await this.verifyAccessToken(token);
+      if (!payload) {
+        throw new UnauthorizedException('Invalid access token');
+      }
+
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
@@ -56,4 +60,30 @@ export class AuthGuard implements CanActivate {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
+
+  private extractTokenFromCookie(request: Request): string | undefined {
+    return request.cookies['refreshToken'];
+  }
+
+  private verifyRefreshToken(token: string): Promise<any> {
+    try {
+    return this.jwtService.verifyAsync(token, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+    });
+  }
+    catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  private verifyAccessToken(token: string): Promise<any> {
+    try {
+      return this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      });
+  } catch (error) {
+      throw new UnauthorizedException('Invalid access token');
+    }
+  }
+
 }
