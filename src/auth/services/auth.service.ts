@@ -30,7 +30,9 @@ export class AuthService {
     // sub is the subject of the JWT, typically the user ID
     const payload = { sub: user.id, email: user.email };
     return {
+
       email: user.email,
+      name: user.name,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
