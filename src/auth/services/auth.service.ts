@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
-import { SignInDto } from '../dtos/signin.dto';
+import { SignInRequestDto } from '../dtos/signInRequest.dto';
 import { Helpers } from 'src/helpers/helper.helpers';
 import { SignInResponseDto } from '../dtos/signinResponse.dto';
 
@@ -15,7 +15,7 @@ export class AuthService {
     private readonly helpers: Helpers, // Assuming Helpers is used for some utility functions
   ) {}
 
-  async signIn(signInDto: SignInDto): Promise<SignInResponseDto> {
+  async signIn(signInDto: SignInRequestDto): Promise<SignInResponseDto> {
 
     const user = await this.usersService.findOne(signInDto.email);
 
