@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterUserDto } from '../dtos/register.dto';
 import { Exceptions } from 'src/exceptions/exceptions.execptions';
 import { Helpers } from 'src/helpers/helper.helpers';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -41,4 +42,5 @@ export class UsersService {
             throw new Error('Error finding user');
         }
     }
+
 }
