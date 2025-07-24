@@ -8,6 +8,7 @@ import { AuthController } from './controllers/auth.controller';
 import { Helpers } from 'src/helpers/helper.helpers';
 import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    },],
+    },
+  PrismaService],
   controllers: [AuthController],
   exports: [AuthService],
 })
