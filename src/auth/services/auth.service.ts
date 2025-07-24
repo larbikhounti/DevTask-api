@@ -1,12 +1,11 @@
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
 import { SignInRequestDto } from '../dtos/signInRequest.dto';
 import { Helpers } from 'src/helpers/helper.helpers';
 import { SignInResponseDto } from '../dtos/signinResponse.dto';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -19,11 +18,13 @@ export class AuthService {
   async signIn(signInDto: SignInRequestDto): Promise<SignInResponseDto> {
 
     const user  = await this.usersService.findOne(signInDto.email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+
+    if (!signInDto.email || !signInDto.password || !user) {
+      throw new UnauthorizedException('Email and password are required');
     }
 
     if (! await this.helpers.comparePassword(signInDto.password, user.password)) {
+     // this.logger.warn(`Failed login attempt with invalid password for email: ${signInDto.email}`);
       throw new UnauthorizedException();
     }
 
