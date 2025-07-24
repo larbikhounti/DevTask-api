@@ -9,3 +9,8 @@ export class SignInRequestDto {
     @IsString()
     password: string;
 }
+
+export class SignInResponseDto {
+  access_token: string;
+  email: string;
+}
