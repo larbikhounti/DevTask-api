@@ -19,6 +19,7 @@ export class UsersService {
             await this.prisma.user.create({
                 data: {
                     ...data,
+                    refreshToken: '', // Initialize refreshToken as empty string
                     password: hashedPassword,
                 },
             });
