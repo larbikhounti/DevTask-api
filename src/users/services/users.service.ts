@@ -15,19 +15,22 @@ export class UsersService {
 
     async create(data: RegisterUserDto): Promise<string | Error> {
         try {
+           
             const hashedPassword = await this.helpers.hashPassword(data.password);
-            await this.prisma.user.create({
+            const user = await this.prisma.user.create({
                 data: {
                     ...data,
                     refreshToken: '', // Initialize refreshToken as empty string
                     password: hashedPassword,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
                 },
             });
-            
+
             return `User created successfully`;
 
         } catch (error) {
-
+            console.error('Error creating user:', error);
             return this.exceptions.ExceptionHandler(error.code);
 
         }
