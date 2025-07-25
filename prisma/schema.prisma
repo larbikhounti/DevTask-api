@@ -23,6 +23,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// priority enum 0: Low, 1: Medium, 2: High
+enum Priority {
+  Low
+  Medium
+  High
+}
 
 model Users {
   id    Int     @default(autoincrement()) @id
@@ -41,6 +47,9 @@ model tasks {
   description String
   completed   Boolean  @default(false)
   userId     Int
+  estimatedTime Int?
+  deadline    DateTime?
+  priority    Priority @default(Low)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
