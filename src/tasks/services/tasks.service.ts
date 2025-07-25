@@ -16,18 +16,32 @@ export class TasksService {
     const { sub: userId } = request['user'] as JwtPayloadType;
 
     try {
-      return await this.prisma.tasks.create({
+      await this.prisma.tasks.create({
         data: {
           ...createTaskDto,
           userId,
         },
       });
-
+      return { message: 'Task created successfully' };
     } catch (error) {
       console.error('Error creating task:', error);
       throw new HttpException('Could not create task', 500);
     }
 
+  }
+
+  async complete(id: number, request: Request) {
+    const { sub: userId } = request['user'] as JwtPayloadType;
+    try {
+      await this.prisma.tasks.update({
+        where: { id, userId },
+        data: { completed: true },
+      });
+      return { message: 'Task marked as completed successfully' };
+    } catch (error) {
+      console.error('Error completing task:', error);
+      throw new HttpException('Could not complete task', 500);
+    }
   }
 
   async findAll(request: Request) {
@@ -60,10 +74,11 @@ export class TasksService {
   async update(id: number, updateTaskDto: UpdateTaskDto, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      return await this.prisma.tasks.update({
+      await this.prisma.tasks.update({
         where: { id, userId },
         data: updateTaskDto,
       });
+      return { message: 'Task updated successfully' };
     } catch (error) {
       console.error('Error updating task:', error);
       throw new HttpException('Could not update task', 500);
