@@ -1,5 +1,5 @@
 
-import { Body, Controller, Post, HttpCode, HttpStatus, Res } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, HttpStatus, Res, Get } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { SignInRequestDto } from '../dtos/auth.dto';
 import { Public } from '../decorator/public.decorator';
@@ -19,7 +19,7 @@ export class AuthController {
 
   // refresh token endpoint
   @HttpCode(HttpStatus.OK)
-  @Post('refresh')
+  @Get('refresh-token')
   async refreshToken(@Res({ passthrough: true }) response: Response) {
     return this.authService.refreshToken(response);
   }
