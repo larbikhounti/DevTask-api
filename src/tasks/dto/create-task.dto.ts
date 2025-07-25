@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { Priority } from "@prisma/client";
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateTaskDto {
     @ApiProperty({
@@ -24,4 +25,25 @@ export class CreateTaskDto {
     @IsNotEmpty()
     @IsNumber()
     userId: number; // Assuming a task belongs to a user
+
+    @ApiPropertyOptional({
+        description: 'priority of the task',
+        example: Priority.Low,
+    })
+    @IsEnum(Priority)
+    priority: Priority;
+
+    @ApiPropertyOptional({
+        description: 'Estimated time to complete the task in hours',
+        example: 2,
+    })
+    @IsNumber()
+    estimatedTime: number;
+    
+    @ApiPropertyOptional({
+        description: 'Deadline for the task',
+        example: '2023-12-31T23:59:59Z',
+    })
+    deadline: Date;
+
 }
