@@ -17,4 +17,11 @@ export class AuthController {
     return this.authService.signIn(signInDto, response);
   }
 
+  // refresh token endpoint
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  async refreshToken(@Res({ passthrough: true }) response: Response) {
+    return this.authService.refreshToken(response);
+  }
+
 }
