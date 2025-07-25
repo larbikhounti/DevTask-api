@@ -1,9 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { UpdateTaskDto } from '../dto/update-task.dto';
 import { Request } from 'express';
 import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Priority } from '@prisma/client';
+import { UpdateTaskDto } from '../dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -41,6 +42,47 @@ export class TasksService {
     } catch (error) {
       console.error('Error completing task:', error);
       throw new HttpException('Could not complete task', 500);
+    }
+  }
+
+  async updatePriority(id: number, priority: Priority, request: Request) {
+    const { sub: userId } = request['user'] as JwtPayloadType;
+    try {
+      await this.prisma.tasks.update({
+        where: { id, userId },
+        data: { priority },
+      });
+      return { message: 'Task priority updated successfully' };
+    } catch (error) {
+      console.error('Error updating task priority:', error);
+      throw new HttpException('Could not update task priority', 500);
+    }
+  }
+
+  async updateEstimatedTime(id: number, estimatedTime: number, request: Request) {
+    const { sub: userId } = request['user'] as JwtPayloadType;
+    try {
+      await this.prisma.tasks.update({
+        where: { id, userId },
+        data: { estimatedTime },
+      });
+      return { message: 'Task estimated time updated successfully' };
+    } catch (error) {
+      console.error('Error updating task estimated time:', error);
+      throw new HttpException('Could not update task estimated time', 500);
+    }
+  }
+  async updateDeadline(id: number, deadline: Date, request: Request) {
+    const { sub: userId } = request['user'] as JwtPayloadType;
+    try {
+      await this.prisma.tasks.update({
+        where: { id, userId },
+        data: {  deadline },
+      });
+      return { message: 'Task deadline updated successfully' };
+    } catch (error) {
+      console.error('Error updating task deadline:', error);
+      throw new HttpException('Could not update task deadline', 500);
     }
   }
 
