@@ -4,7 +4,7 @@ DevTask API is a backend service designed to power task management application f
 
 # project
 
-[## kanban dashboard](https://github.com/users/larbikhounti/projects/2)
+[kanban dashboard](https://github.com/users/larbikhounti/projects/2)
 
 ## Features
 
