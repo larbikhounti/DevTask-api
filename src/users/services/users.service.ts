@@ -1,5 +1,5 @@
 import { Injectable} from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterUserDto } from '../dtos/register.dto';
 import { Exceptions } from 'src/exceptions/exceptions.execptions';
@@ -17,7 +17,7 @@ export class UsersService {
         try {
            
             const hashedPassword = await this.helpers.hashPassword(data.password);
-            const user = await this.prisma.user.create({
+            const user = await this.prisma.users.create({
                 data: {
                     ...data,
                     refreshToken: '', // Initialize refreshToken as empty string
@@ -36,9 +36,9 @@ export class UsersService {
         }
     }
 
-    async findOne(email: string): Promise<User | null> {
+    async findOne(email: string): Promise<Users | null> {
         try {
-            return await this.prisma.user.findUnique({
+            return await this.prisma.users.findUnique({
                 where: { email },
             });
         } catch (error) {
