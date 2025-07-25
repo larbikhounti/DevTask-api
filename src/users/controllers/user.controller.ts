@@ -9,10 +9,12 @@ export class UserController {
 
   // register user
   @Public()
-  @HttpCode(HttpStatus.CREATED)
+  //@HttpCode(HttpStatus.CREATED)
   @Post('register')
   registerUser(@Body() registerUserDto: RegisterUserDto) {
     return this.usersService.create(registerUserDto);
   }
+
+
 
 }
