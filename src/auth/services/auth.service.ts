@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
 import { SignInRequestDto, SignInResponseDto } from '../dtos/auth.dto';
 import { Helpers } from 'src/helpers/helper.helpers';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -37,7 +37,7 @@ export class AuthService {
     const { accessToken, refreshToken } = await this.generateTokens(user);
 
     // update user refresh token
-    await this.prisma.user.update({
+    await this.prisma.users.update({
       where: { id: user.id },
       data: {
         refreshToken: await this.helpers.hashPassword(refreshToken), // Assuming you want to hash the password for the refresh token
@@ -79,7 +79,7 @@ async logout(response: Response) : Promise<{ message: string }> {
   }
 
   // Clear the refresh token in the database first
-  await this.prisma.user.update({
+  await this.prisma.users.update({
     where: { email: user.email },
     data: { refreshToken: '' },
   });
@@ -130,7 +130,7 @@ async logout(response: Response) : Promise<{ message: string }> {
   }
 
   // auth.service.ts
-  async generateTokens(user: User): Promise<{ accessToken: string; refreshToken: string }> {
+  async generateTokens(user: Users): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = { sub: user.id, email: user.email };
 
     const accessToken = await this.jwtService.signAsync(payload, {
