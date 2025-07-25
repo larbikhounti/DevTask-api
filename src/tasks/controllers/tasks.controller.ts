@@ -13,6 +13,12 @@ export class TasksController {
     return this.tasksService.create(createTaskDto, request);
   }
 
+  // mark as completed
+  @Get(':id/complete')
+  complete(@Param('id') id: string, @Req() request: Request) {
+    return this.tasksService.complete(+id, request);
+  }
+
   @Get()
   findAll(@Req() request: Request) {
     return this.tasksService.findAll(request);
