@@ -17,11 +17,16 @@ export class AuthController {
     return this.authService.signIn(signInDto, response);
   }
 
-  // refresh token endpoint
   @HttpCode(HttpStatus.OK)
   @Get('refresh-token')
   async refreshToken(@Res({ passthrough: true }) response: Response) {
     return this.authService.refreshToken(response);
   }
+
+  @Get('logout')
+  async logout(@Res({ passthrough: true }) response: Response) {
+    await this.authService.logout(response);
+  }
+
 
 }
