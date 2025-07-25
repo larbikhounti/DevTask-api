@@ -59,6 +59,36 @@ export class AuthService {
     };
   }
 
+async logout(response: Response) : Promise<{ message: string }> {
+  let refreshToken = response.req.cookies['refreshToken'];
+  if (!refreshToken) {
+    throw new UnauthorizedException('Refresh token is required');
+  }
+
+  // get the user
+  const payload = await this.jwtService.verifyAsync(refreshToken, {
+    secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+  });
+  if (!payload) {
+    throw new UnauthorizedException('Invalid refresh token');
+  }
+  // Find the user associated with the refresh token
+  const user = await this.usersService.findOne(payload.email);
+  if (!user) {
+    throw new UnauthorizedException('User not found');
+  }
+
+  // Clear the refresh token in the database first
+  await this.prisma.user.update({
+    where: { email: user.email },
+    data: { refreshToken: '' },
+  });
+
+  return {
+    message: 'Logged out successfully',
+  };
+}
+
 
   // refreshToken method to generate new access token using refresh token
   async refreshToken(response: Response): Promise<{ accessToken: string }> {
@@ -84,7 +114,7 @@ export class AuthService {
       }
       // Generate new access token
       const { accessToken, refreshToken: newRefreshToken } = await this.generateTokens(user);
-      
+
       // Update the user's refresh token in the database
       response.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
