@@ -30,10 +30,10 @@ export class TasksService {
 
   }
 
-  findAll(request: Request) {
+  async findAll(request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      return this.prisma.tasks.findMany({
+      return await this.prisma.tasks.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },
       });
@@ -43,10 +43,10 @@ export class TasksService {
     }
   }
 
-  findOne(id: number, request: Request) {
+  async findOne(id: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      return this.prisma.tasks.findUnique({
+      return await this.prisma.tasks.findUnique({
         where: { id, userId },
       });
     } catch (error) {
@@ -57,10 +57,10 @@ export class TasksService {
 
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto, request: Request) {
+  async update(id: number, updateTaskDto: UpdateTaskDto, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      return this.prisma.tasks.update({
+      return await this.prisma.tasks.update({
         where: { id, userId },
         data: updateTaskDto,
       });
@@ -72,10 +72,10 @@ export class TasksService {
 
   }
 
-  remove(id: number, request: Request) {
+ async remove(id: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      return this.prisma.tasks.delete({
+      return await this.prisma.tasks.delete({
         where: { id, userId },
       });
     } catch (error) {
