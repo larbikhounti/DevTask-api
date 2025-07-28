@@ -143,24 +143,42 @@ export class TasksService {
 
   }
 
-  incrementTimerPerSecond(task: tasks) {
+  async incrementTimerPerSecond(tasks: tasks[]) {
     try {
-      this.prisma.tasks.updateMany({
-        where: { id: task.id, isTimerEnabled: true },
+      await this.prisma.tasks.updateMany({
+        where: { id: { in: tasks.map(task => task.id) }, isTimerEnabled: true },
         data: {
-          currentTimer: new Date(task.currentTimer.getTime() + 1000),
+          currentTimerSeconds: { increment: 1 }
         },
       });
     } catch (error) {
-      console.error('Error incrementing cron per second:', error);
-      throw new HttpException('Could not increment cron per second', 500);
+      console.error('Error incrementing timer:', error);
+      throw new HttpException('Could not increment timer', 500);
     }
   }
 
-  async findEnabledTimerTasks(): Promise<tasks[]> {
-        return await this.prisma.tasks.findMany({
-            where: { isTimerEnabled: true },
-        });
-
+  async startTimer(id: number, request: Request, enable: boolean = true) {
+    const { sub: userId } = request['user'] as JwtPayloadType;
+    try {
+      await this.prisma.tasks.update({
+        where: { id, userId },
+        data: { isTimerEnabled: enable },
+      });
+      return { message: enable ? 'Timer enabled successfully' : 'Timer disabled successfully' };
+    } catch (error) {
+      console.error('Error enabling/disabling timer:', error);
+      throw new HttpException('Could not enable/disable timer', 500);
     }
+  }
+
+  async stopTimer(id: number, request: Request) {
+    this.startTimer(id, request, false);
+  }
+
+  async findEnabledTimerTasks(): Promise<tasks[]> {
+    return await this.prisma.tasks.findMany({
+      where: { isTimerEnabled: true },
+    });
+
+  }
 }
