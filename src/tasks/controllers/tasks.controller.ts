@@ -38,6 +38,16 @@ export class TasksController {
     return this.tasksService.updateDeadline(+id, deadline, request);
   }
 
+  @Put(':id/timer/start')
+  startTimer(@Param('id') id: string, @Req() request: Request) {
+    return this.tasksService.startTimer(+id, request);
+  }
+
+  @Put(':id/timer/stop')
+  stopTimer(@Param('id') id: string, @Req() request: Request) {
+    return this.tasksService.stopTimer(+id, request);
+  }
+
   @Get()
   findAll(@Req() request: Request) {
     return this.tasksService.findAll(request);
