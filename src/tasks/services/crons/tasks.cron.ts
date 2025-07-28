@@ -17,12 +17,7 @@ export class TasksCron {
                 console.log('No tasks with timer enabled found');
                 return;
             }
-            // for each task, check if the current date is greater than the timer date
-            tasks.forEach(task => {
-                if (task.currentTimer && new Date(task.currentTimer) <= new Date()) {
-                    this.tasksService.incrementTimerPerSecond(task);
-                }
-            });
+            await this.tasksService.incrementTimerPerSecond(tasks);
         } catch (error) {
             console.error('Error executing cron job:', error);
         }
