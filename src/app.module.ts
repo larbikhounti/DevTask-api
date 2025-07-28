@@ -5,6 +5,7 @@ import { ExceptionModule } from './exceptions/exceptions.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TasksModule } from './tasks/tasks.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,6 +15,7 @@ import { TasksModule } from './tasks/tasks.module';
       ttl: 60,
       limit: 10,
     }]),
+    ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
     ExceptionModule,
