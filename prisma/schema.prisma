@@ -50,6 +50,8 @@ model tasks {
   estimatedTime Int?
   deadline    DateTime?
   priority    Priority @default(Low)
+  currentTimer DateTime @default(now())
+  isTimerEnabled Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
