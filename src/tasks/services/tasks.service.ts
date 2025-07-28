@@ -3,7 +3,7 @@ import { CreateTaskDto } from '../dto/create-task.dto';
 import { Request } from 'express';
 import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Priority } from '@prisma/client';
+import { Priority, tasks } from '@prisma/client';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 
 @Injectable()
@@ -77,7 +77,7 @@ export class TasksService {
     try {
       await this.prisma.tasks.update({
         where: { id, userId },
-        data: {  deadline },
+        data: { deadline },
       });
       return { message: 'Task deadline updated successfully' };
     } catch (error) {
@@ -129,7 +129,7 @@ export class TasksService {
 
   }
 
- async remove(id: number, request: Request) {
+  async remove(id: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
       return await this.prisma.tasks.delete({
@@ -142,4 +142,25 @@ export class TasksService {
     }
 
   }
+
+  incrementTimerPerSecond(task: tasks) {
+    try {
+      this.prisma.tasks.updateMany({
+        where: { id: task.id, isTimerEnabled: true },
+        data: {
+          currentTimer: new Date(task.currentTimer.getTime() + 1000),
+        },
+      });
+    } catch (error) {
+      console.error('Error incrementing cron per second:', error);
+      throw new HttpException('Could not increment cron per second', 500);
+    }
+  }
+
+  async findEnabledTimerTasks(): Promise<tasks[]> {
+        return await this.prisma.tasks.findMany({
+            where: { isTimerEnabled: true },
+        });
+
+    }
 }
