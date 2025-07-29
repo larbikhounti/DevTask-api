@@ -91,6 +91,17 @@ export class TasksService {
     try {
       return await this.prisma.tasks.findMany({
         where: { userId },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          priority: true,
+          estimatedTime: true,
+          deadline: true,
+          completed: true,
+          createdAt: true,
+          currentTimerSeconds: true, // this field should be converted to human readable format in the frontend
+        },
         orderBy: { createdAt: 'desc' },
       });
     } catch (error) {
