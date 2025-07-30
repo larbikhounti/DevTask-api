@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ClientsModule } from './clients/clients.module';
+import { ProjectsModule } from './projects/projects.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,7 +21,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     UsersModule,
     AuthModule,
     ExceptionModule,
-    TasksModule
+    TasksModule,
+    ClientsModule,
+    ProjectsModule
   ],
   controllers: [],
   providers: [],
