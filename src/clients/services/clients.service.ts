@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 
 
 
@@ -14,7 +15,7 @@ export class ClientsService {
 
   create(createClientDto: CreateClientDto, request: Request) {
     try {
-      const  { sub: userId } = request['user']; // Assuming user ID is stored in request.user
+      const  { sub: userId } = request['user'] as JwtPayloadType; // Assuming user ID is stored in request.user
       return this.prismaService.clients.create({
         data: { ...createClientDto, userId },
         select: {
