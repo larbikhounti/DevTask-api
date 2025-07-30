@@ -1,6 +1,6 @@
 import { Injectable} from '@nestjs/common';
 import { Users } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { RegisterUserDto } from '../dtos/register.dto';
 import { Exceptions } from 'src/exceptions/exceptions.execptions';
 import { Helpers } from 'src/helpers/helper.helpers';
@@ -17,7 +17,7 @@ export class UsersService {
         try {
            
             const hashedPassword = await this.helpers.hashPassword(data.password);
-            const user = await this.prisma.users.create({
+            await this.prisma.users.create({
                 data: {
                     ...data,
                     refreshToken: '', // Initialize refreshToken as empty string
