@@ -8,12 +8,13 @@ import { AuthController } from './controllers/auth.controller';
 import { Helpers } from 'src/helpers/helper.helpers';
 import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   imports: [
     UsersModule,
     ConfigModule,
+    PrismaModule,
     JwtModule.registerAsync({
       // global: true,
       inject: [ConfigService],
@@ -29,8 +30,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    },
-  PrismaService],
+    }],
   controllers: [AuthController],
   exports: [AuthService],
 })
