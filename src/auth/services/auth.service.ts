@@ -107,6 +107,10 @@ async logout(response: Response) : Promise<{ message: string }> {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
+      // check if the refresh token exists in the database
+      if (!user.refreshToken) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
       // Check if the refresh token matches the one stored in the database
       if (!await this.helpers.comparePassword(refreshToken, user.refreshToken)) {
         // this.logger.warn(`Failed login attempt with invalid password for email: ${signInDto.email}`);
