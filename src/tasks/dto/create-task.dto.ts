@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Priority } from "@prisma/client";
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateTaskDto {
     @ApiProperty({
@@ -24,7 +24,8 @@ export class CreateTaskDto {
     })
     @IsNotEmpty()
     @IsNumber()
-    userId: number; // Assuming a task belongs to a user
+    @IsOptional()
+    userId?: number; // Assuming a task belongs to a user
 
     @ApiProperty({
         description: 'The ID of the project to which the task belongs',
