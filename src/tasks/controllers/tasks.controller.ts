@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Param, Delete, Req, Query, Put, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Req, Query, Put, Patch, Request } from '@nestjs/common';
 import { TasksService } from '../services/tasks.service';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { Request } from 'express';
 import { Priority } from '@prisma/client';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 
