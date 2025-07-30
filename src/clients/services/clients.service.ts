@@ -1,19 +1,21 @@
 import { HttpException, HttpStatus, Injectable, Request } from '@nestjs/common';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+
 
 
 @Injectable()
 export class ClientsService {
+
   constructor(
-    private readonly prisma: PrismaClient,
+    private readonly prismaService: PrismaService
   ) {}
 
   create(createClientDto: CreateClientDto, request: Request) {
     try {
       const userId = request['user'].id; // Assuming user ID is stored in request.user
-      return this.prisma.clients.create({
+      return this.prismaService.clients.create({
         data: { ...createClientDto, userId },
       });
     } catch (error) {
