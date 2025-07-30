@@ -8,6 +8,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ClientsModule } from './clients/clients.module';
 import { ProjectsModule } from './projects/projects.module';
+import { PrismaModule } from './prisma/prisma.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,6 +18,7 @@ import { ProjectsModule } from './projects/projects.module';
       ttl: 60,
       limit: 10,
     }]),
+    PrismaModule,
     ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
