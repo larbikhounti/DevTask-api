@@ -1,6 +1,5 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Request } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { Request } from 'express';
 import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Priority, tasks } from '@prisma/client';
