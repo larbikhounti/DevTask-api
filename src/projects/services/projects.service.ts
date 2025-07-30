@@ -38,9 +38,33 @@ export class ProjectsService {
 
   }
 
- async findAll() {
-    
+ async findAll(clientId: number, request: Request) {
+    try {
+      const { sub: userId } = request['user'] as JwtPayloadType;
+      await this.clientsService.findOne(clientId, request);
+
+      return this.prismaService.projects.findMany({
+        where: {
+          client: {
+            id: clientId,
+            userId: userId,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          startDate: true,
+          endDate: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      throw new HttpException(`Error fetching projects: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
+
 
 async findOne(id: number, request: Request) {
   try {
