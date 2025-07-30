@@ -38,8 +38,26 @@ export class ClientsService {
     return `This action returns all clients`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} client`;
+  async findOne(id: number, request: Request) {
+    try {
+      const { sub: userId } = request['user'] as JwtPayloadType;
+      return await this.prismaService.clients.findUniqueOrThrow({
+        where: { id, userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      // Handle error
+      throw new HttpException(`Failed to find client with ID ${id}`, HttpStatus.NOT_FOUND);
+      
+    }
   }
 
   update(id: number, updateClientDto: UpdateClientDto) {
