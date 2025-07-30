@@ -4,31 +4,41 @@ import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 import { Priority, tasks } from '@prisma/client';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { ProjectsService } from 'src/projects/services/projects.service';
 
 @Injectable()
 export class TasksService {
   constructor(
-    private readonly prisma: PrismaService, // Uncomment if using Prisma
+    private readonly prisma: PrismaService,
+    private readonly projectsService: ProjectsService
   ) { }
 
 
   async create(createTaskDto: CreateTaskDto, request: Request) {
-    const { sub: userId } = request['user'] as JwtPayloadType;
 
     try {
+      const project = await this.projectsService.findOne(createTaskDto.projectId, request);
+      if (!project) {
+        throw new HttpException('Project not found', 404);
+      }
+
       await this.prisma.tasks.create({
         data: {
-          ...createTaskDto,
-          userId,
+          ...createTaskDto
         },
       });
+
       return { message: 'Task created successfully' };
     } catch (error) {
       console.error('Error creating task:', error);
+      if (error instanceof HttpException) {
+        throw error; // rethrow if it's already an HttpException
+      }
       throw new HttpException('Could not create task', 500);
     }
 
   }
+
 
   async complete(id: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
