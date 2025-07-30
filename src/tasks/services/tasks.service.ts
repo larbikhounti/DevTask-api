@@ -41,29 +41,42 @@ export class TasksService {
 
 
   async complete(id: number, request: Request) {
-    const { sub: userId } = request['user'] as JwtPayloadType;
     try {
+      const task = await this.findOne(id, request);
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
+
+
       await this.prisma.tasks.update({
-        where: { id, userId },
+        where: { id },
         data: { completed: true },
       });
       return { message: 'Task marked as completed successfully' };
     } catch (error) {
-      console.error('Error completing task:', error);
-      throw new HttpException('Could not complete task', 500);
+      if (error instanceof HttpException) {
+        throw error; // rethrow if it's already an HttpException
+      }
+      throw new HttpException('Could not mark task as completed', 500);
     }
   }
 
   async updatePriority(id: number, priority: Priority, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
+      const task = await this.findOne(id, request);
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
       await this.prisma.tasks.update({
         where: { id, userId },
         data: { priority },
       });
       return { message: 'Task priority updated successfully' };
     } catch (error) {
-      console.error('Error updating task priority:', error);
+      if (error instanceof HttpException) {
+        throw error; // rethrow if it's already an HttpException
+      }
       throw new HttpException('Could not update task priority', 500);
     }
   }
@@ -71,26 +84,39 @@ export class TasksService {
   async updateEstimatedTime(id: number, estimatedTime: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
+      const task = await this.findOne(id, request);
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
+
       await this.prisma.tasks.update({
         where: { id, userId },
         data: { estimatedTime },
       });
       return { message: 'Task estimated time updated successfully' };
     } catch (error) {
-      console.error('Error updating task estimated time:', error);
+      if (error instanceof HttpException) {
+        throw error; // rethrow if it's already an HttpException
+      }
       throw new HttpException('Could not update task estimated time', 500);
     }
   }
   async updateDeadline(id: number, deadline: Date, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
+      const task = await this.findOne(id, request);
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
       await this.prisma.tasks.update({
         where: { id, userId },
         data: { deadline },
       });
       return { message: 'Task deadline updated successfully' };
     } catch (error) {
-      console.error('Error updating task deadline:', error);
+      if (error instanceof HttpException) {
+        throw error; // rethrow if it's already an HttpException
+      }
       throw new HttpException('Could not update task deadline', 500);
     }
   }
@@ -99,7 +125,7 @@ export class TasksService {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
       return await this.prisma.tasks.findMany({
-        where: { userId },
+        where: { project: { client : { user: { id: userId } } } },
         select: {
           id: true,
           title: true,
@@ -109,7 +135,7 @@ export class TasksService {
           deadline: true,
           completed: true,
           createdAt: true,
-          currentTimerSeconds: true, // this field should be converted to human readable format in the frontend
+          currentTimerSeconds: true,
         },
         orderBy: { createdAt: 'desc' },
       });
@@ -122,11 +148,17 @@ export class TasksService {
   async findOne(id: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      return await this.prisma.tasks.findUnique({
-        where: { id, userId },
+      const task =  await this.prisma.tasks.findUnique({
+        where: { id, project: { client : { user: { id: userId } } } },
       });
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
+      return task;
     } catch (error) {
-      console.error('Error finding task:', error);
+      if (error instanceof HttpException) {
+        throw error; // rethrow if it's already an HttpException
+      }
       throw new HttpException('Could not find task', 500);
 
     }
@@ -134,10 +166,14 @@ export class TasksService {
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto, request: Request) {
-    const { sub: userId } = request['user'] as JwtPayloadType;
     try {
+      const task = await this.findOne(id, request);
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
+
       await this.prisma.tasks.update({
-        where: { id, userId },
+        where: { id },
         data: updateTaskDto,
       });
       return { message: 'Task updated successfully' };
@@ -180,12 +216,19 @@ export class TasksService {
   async startTimer(id: number, request: Request, enable: boolean = true) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
+      const task = await this.findOne(id, request);
+      if (!task) {
+        throw new HttpException('Task not found', 404);
+      }
       await this.prisma.tasks.update({
-        where: { id, userId },
+        where: { id },
         data: { isTimerEnabled: enable },
       });
       return { message: enable ? 'Timer enabled successfully' : 'Timer disabled successfully' };
     } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
       console.error('Error enabling/disabling timer:', error);
       throw new HttpException('Could not enable/disable timer', 500);
     }
