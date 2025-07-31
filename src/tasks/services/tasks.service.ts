@@ -35,7 +35,7 @@ export class TasksService {
     try {
       await this.prisma.tasks.update({
         where: { id, userId },
-        data: { completed: true },
+        data: { completed: true, completedAt: new Date() },
       });
       return { message: 'Task marked as completed successfully' };
     } catch (error) {

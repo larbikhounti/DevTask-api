@@ -50,6 +50,7 @@ model tasks {
   userId     Int
   estimatedTime Int?
   deadline    DateTime?
+  completedAt         DateTime?
   priority    Priority @default(Low)
   currentTimerSeconds Int  @default(0)
   isTimerEnabled Boolean @default(false)
