@@ -1,6 +1,8 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { dateRangesEnum } from 'src/tasks/dto/filter-tasks.dto';
+
+@Injectable()
 export class Helpers {
 
     async hashPassword(password: string): Promise<string> {
