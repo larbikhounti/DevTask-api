@@ -4,11 +4,14 @@ import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 import { Priority, tasks } from '@prisma/client';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { FilterTasksDto } from '../dto/filter-tasks.dto';
+import { Helpers } from 'src/helpers/helper.helpers';
 
 @Injectable()
 export class TasksService {
   constructor(
     private readonly prisma: PrismaService, // Uncomment if using Prisma
+    private readonly helpers: Helpers,
   ) { }
 
 
@@ -85,11 +88,26 @@ export class TasksService {
     }
   }
 
-  async findAll(request: Request) {
+  async findAll(taskFilters: FilterTasksDto, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
+
+    const { dateRange, completed, priority, estimatedTime, deadline } = taskFilters;
+
+    let filters  = { 
+  
+    };
+
+    if (dateRange) {
+      const dates = this.helpers.getDateRange(dateRange);
+      filters = { ...filters, completedAt: { gte: dates.from, lte: dates.to } };
+    }
+    if (completed !== undefined) {
+      filters = { ...filters, completed };
+    }
+
     try {
       return await this.prisma.tasks.findMany({
-        where: { userId },
+        where: { userId, ...filters },
         select: {
           id: true,
           title: true,
