@@ -3,7 +3,6 @@ import { DashboardService } from './services/dashboard.service';
 import { DashboardController } from './controller/dashboard.controller';
 import { TasksModule } from 'src/tasks/tasks.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { Helpers } from 'src/helpers/helper.helpers';
 
 @Module({
   controllers: [DashboardController],
