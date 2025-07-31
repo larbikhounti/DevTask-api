@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ClientsModule } from './clients/clients.module';
 import { ProjectsModule } from './projects/projects.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,7 +26,8 @@ import { PrismaModule } from './prisma/prisma.module';
     ExceptionModule,
     TasksModule,
     ClientsModule,
-    ProjectsModule
+    ProjectsModule,
+    DashboardModule
   ],
   controllers: [],
   providers: [],
