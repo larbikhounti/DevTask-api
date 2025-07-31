@@ -3,6 +3,7 @@ import { TasksService } from '../services/tasks.service';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { Priority } from '@prisma/client';
 import { UpdateTaskDto } from '../dto/update-task.dto';
+import { FilterTasksDto } from '../dto/filter-tasks.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -48,8 +49,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll(@Req() request: Request) {
-    return this.tasksService.findAll(request);
+  findAll(@Query() query: FilterTasksDto, @Req() request: Request) {
+    return this.tasksService.findAll(query, request);
   }
 
   @Get(':id')
