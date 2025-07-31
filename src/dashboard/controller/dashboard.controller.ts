@@ -6,9 +6,4 @@ import { FilterTasksDto } from '../dto/filter-tasks.dto';
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
-
-  @Get()
-  findTasks(@Query() query: FilterTasksDto, @Request() req) {
-    return this.dashboardService.findTasks(query, req);
-  }
 }
