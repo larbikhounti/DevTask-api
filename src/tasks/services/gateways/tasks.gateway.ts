@@ -31,9 +31,6 @@ export class TasksGateway {
             return;
         }
         this.socketIo.emit('tasks-timer', filteredTasks);
-
-        this.socketIo.emit('tasks-timer', `Timer tick: ${new Date().toISOString()}`);  
-
       
     }
 }
