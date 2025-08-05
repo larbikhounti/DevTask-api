@@ -1,11 +1,13 @@
 import { Cron } from "@nestjs/schedule";
 import { TasksService } from "../tasks.service";
 import { Injectable } from "@nestjs/common";
+import { TasksGateway } from "../gateways/tasks.gateway";
 
 @Injectable()
 export class TasksCron {
     constructor(
         private readonly tasksService: TasksService,
+        private readonly tasksGateway: TasksGateway,
     ) { }
 
     // This method will be executed every second
