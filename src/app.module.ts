@@ -10,6 +10,7 @@ import { ClientsModule } from './clients/clients.module';
 import { ProjectsModule } from './projects/projects.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { CacheModule } from '@nestjs/cache-manager';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,6 +20,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
       ttl: 60,
       limit: 10,
     }]),
+    CacheModule.register(),
     PrismaModule,
     ScheduleModule.forRoot(),
     UsersModule,
