@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 
 export enum dateRangesEnum {
@@ -11,35 +11,35 @@ export enum dateRangesEnum {
 }
 
 export class FilterTasksDto {
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Filter by task date range',
         example: 'last7days',
         required: false,
     })
     dateRange: dateRangesEnum;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Filter by task completion status',
         example: true,
         required: false,
     })
     completed?: boolean;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Filter by task priority',
         example: 'High',
         required: false,
     })
     priority?: string;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Filter by task estimated time',
         example: 60,
         required: false,
     })
     estimatedTime?: number;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Filter by task deadline',
         example: '2023-10-01T00:00:00Z',
         required: false,
