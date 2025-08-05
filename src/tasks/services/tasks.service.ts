@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { JwtPayloadType } from 'src/auth/types/jwt-payload.type';
 import { Priority, tasks } from '@prisma/client';
@@ -7,13 +7,16 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { FilterTasksDto } from '../dto/filter-tasks.dto';
 import { Helpers } from 'src/helpers/helper.helpers';
 import { ProjectsService } from 'src/projects/services/projects.service';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class TasksService {
   constructor(
     private readonly prisma: PrismaService, // Uncomment if using Prisma
-    private readonly projectsService: ProjectsService, 
+    private readonly projectsService: ProjectsService,
     private readonly helpers: Helpers,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) { }
 
 
@@ -129,8 +132,8 @@ export class TasksService {
 
     const { dateRange, completed, priority, estimatedTime, deadline } = taskFilters;
 
-    let filters  = { 
-  
+    let filters = {
+
     };
 
     if (dateRange) {
@@ -166,8 +169,8 @@ export class TasksService {
   async findOne(id: number, request: Request) {
     const { sub: userId } = request['user'] as JwtPayloadType;
     try {
-      const task =  await this.prisma.tasks.findUnique({
-        where: { id, project: { client : { user: { id: userId } } } },
+      const task = await this.prisma.tasks.findUnique({
+        where: { id, project: { client: { user: { id: userId } } } },
       });
       if (!task) {
         throw new HttpException('Task not found', 404);
@@ -220,12 +223,18 @@ export class TasksService {
 
   async incrementTimerPerSecond(tasks: tasks[]) {
     try {
-      await this.prisma.tasks.updateMany({
+      const updatedTasks = await this.prisma.tasks.updateManyAndReturn({
         where: { id: { in: tasks.map(task => task.id) }, isTimerEnabled: true },
         data: {
           currentTimerSeconds: { increment: 1 }
         },
       });
+      // save tasks ids and current time in cache
+      await this.cacheManager.set('tasks-timer', updatedTasks.map(task => ({
+        id: task.id,
+        currentTimerSeconds: task.currentTimerSeconds,
+      })));
+      
     } catch (error) {
       console.error('Error incrementing timer:', error);
       throw new HttpException('Could not increment timer', 500);
