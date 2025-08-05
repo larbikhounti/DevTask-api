@@ -1,7 +1,8 @@
 import { Cron } from "@nestjs/schedule";
 import { TasksService } from "../tasks.service";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { TasksGateway } from "../gateways/tasks.gateway";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 
 @Injectable()
 export class TasksCron {
@@ -20,6 +21,7 @@ export class TasksCron {
                 return;
             }
             await this.tasksService.incrementTimerPerSecond(tasks);
+            
         } catch (error) {
             console.error('Error executing cron job:', error);
         }
