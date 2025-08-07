@@ -30,6 +30,7 @@ export class CreateClientDto {
     @IsOptional()
     phone?: string;
 
+    
     @ApiProperty({
         description: 'The address of the client',
         example: '123 Main St, Springfield, USA',
