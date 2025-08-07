@@ -3,20 +3,19 @@ import { Users } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RegisterUserDto } from '../dtos/register.dto';
 import { Exceptions } from 'src/exceptions/exceptions.execptions';
-import { Helpers } from 'src/helpers/helper.helpers';
+import { hashPassword } from 'src/helpers/helper.helpers';
 
 @Injectable()
 export class UsersService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly exceptions: Exceptions,
-        private readonly helpers: Helpers,
     ) { }
 
     async create(data: RegisterUserDto): Promise<string | Error> {
         try {
            
-            const hashedPassword = await this.helpers.hashPassword(data.password);
+            const hashedPassword = await hashPassword(data.password);
             await this.prisma.users.create({
                 data: {
                     ...data,
