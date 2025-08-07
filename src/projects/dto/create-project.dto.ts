@@ -1,5 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
+import { TransformToISODate } from "src/helpers/helper.helpers";
+
+
+
+
 
 export class CreateProjectDto {
     @ApiProperty({
@@ -26,6 +32,7 @@ export class CreateProjectDto {
         type: Number,
     })
     @IsNumber()
+    @Type(() => Number)
     clientId: number;
 
     @ApiProperty({
@@ -36,6 +43,7 @@ export class CreateProjectDto {
     })
     @IsOptional()
     @IsDateString()
+    @TransformToISODate()
     startDate?: Date;
 
     @ApiProperty({
@@ -46,5 +54,6 @@ export class CreateProjectDto {
     })
     @IsOptional()
     @IsDateString()
+    @TransformToISODate()
     endDate?: Date;
 }
