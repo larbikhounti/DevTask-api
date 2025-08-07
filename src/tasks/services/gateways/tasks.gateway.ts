@@ -24,10 +24,6 @@ export class TasksGateway {
 
     @SubscribeMessage('tasks-timer')
     async emitTasksTimer(@ConnectedSocket() client: Socket, @MessageBody() tasksIds: number[]) {
-        // console.log('Client subscribed to tasks timer channel: ', client);
-        // interval(1000).subscribe(() => {
-        //    client.emit('tasks-timer', 'Tasks timer event emitted');
-        // });
         //TODO: Implement a more efficient way to emit tasks timer updates
         console.log('Emitting tasks timer for IDs:', tasksIds);
         const intervals =  interval(1000).subscribe(async () => {
