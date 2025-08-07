@@ -5,7 +5,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
-import { Helpers } from 'src/helpers/helper.helpers';
 import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -26,7 +25,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
       }),
     }),
   ],
-  providers: [AuthService, Helpers, AuthService,
+  providers: [AuthService,AuthService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
