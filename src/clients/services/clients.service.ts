@@ -40,6 +40,7 @@ export class ClientsService {
 
   async findOne(id: number, request: Request) {
     try {
+      console.log(typeof id);
       const { sub: userId } = request['user'] as JwtPayloadType;
       return await this.prismaService.clients.findUniqueOrThrow({
         where: { id, userId },
@@ -50,7 +51,6 @@ export class ClientsService {
           phone: true,
           address: true,
           createdAt: true,
-          updatedAt: true,
         },
       });
     } catch (error) {
