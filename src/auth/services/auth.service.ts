@@ -4,18 +4,18 @@ import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@n
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
 import { SignInRequestDto, SignInResponseDto } from '../dtos/auth.dto';
-import { Helpers } from 'src/helpers/helper.helpers';
+
 import { Users } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { comparePassword, hashPassword } from 'src/helpers/helper.helpers';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private readonly helpers: Helpers, // Assuming Helpers is used for some utility functions
     private readonly configService: ConfigService, // ConfigService to access environment variables
     private readonly prisma: PrismaService, // Inject PrismaService
   ) { }
@@ -28,7 +28,7 @@ export class AuthService {
       throw new UnauthorizedException('Email and password are required');
     }
 
-    if (! await this.helpers.comparePassword(signInDto.password, user.password)) {
+    if (! await comparePassword(signInDto.password, user.password)) {
       // this.logger.warn(`Failed login attempt with invalid password for email: ${signInDto.email}`);
       throw new UnauthorizedException();
     }
@@ -40,7 +40,7 @@ export class AuthService {
     await this.prisma.users.update({
       where: { id: user.id },
       data: {
-        refreshToken: await this.helpers.hashPassword(refreshToken), // Assuming you want to hash the password for the refresh token
+        refreshToken: await hashPassword(refreshToken), // Assuming you want to hash the password for the refresh token
       },
     });
 
@@ -112,7 +112,7 @@ async logout(response: Response) : Promise<{ message: string }> {
         throw new UnauthorizedException('Invalid refresh token');
       }
       // Check if the refresh token matches the one stored in the database
-      if (!await this.helpers.comparePassword(refreshToken, user.refreshToken)) {
+      if (!await comparePassword(refreshToken, user.refreshToken)) {
         // this.logger.warn(`Failed login attempt with invalid password for email: ${signInDto.email}`);
         throw new UnauthorizedException("Invalid refresh token");
       }
