@@ -16,7 +16,7 @@ export class AuthController {
   signIn(@Body() signInDto: SignInRequestDto, @Res({ passthrough: true }) response: Response) {
     return this.authService.signIn(signInDto, response);
   }
-
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Get('refresh-token')
   async refreshToken(@Res({ passthrough: true }) response: Response) {
