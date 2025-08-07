@@ -28,6 +28,7 @@ export class TasksGateway {
         // interval(1000).subscribe(() => {
         //    client.emit('tasks-timer', 'Tasks timer event emitted');
         // });
+        //TODO: Implement a more efficient way to emit tasks timer updates
         console.log('Emitting tasks timer for IDs:', tasksIds);
         const intervals =  interval(1000).subscribe(async () => {
         const tasks = await this.cacheManager.get<{ id: number, currentTimerSeconds: number }[]>('tasks-timer');
