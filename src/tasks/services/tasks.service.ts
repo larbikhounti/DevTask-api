@@ -5,17 +5,16 @@ import { Priority, tasks } from '@prisma/client';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FilterTasksDto } from '../dto/filter-tasks.dto';
-import { Helpers } from 'src/helpers/helper.helpers';
 import { ProjectsService } from 'src/projects/services/projects.service';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { getDateRange } from 'src/helpers/helper.helpers';
 
 @Injectable()
 export class TasksService {
   constructor(
     private readonly prisma: PrismaService, // Uncomment if using Prisma
     private readonly projectsService: ProjectsService,
-    private readonly helpers: Helpers,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) { }
 
@@ -137,7 +136,7 @@ export class TasksService {
     };
 
     if (dateRange) {
-      const dates = this.helpers.getDateRange(dateRange);
+      const dates = getDateRange(dateRange);
       filters = { ...filters, completedAt: { gte: dates.from, lte: dates.to } };
     }
     if (completed !== undefined) {
