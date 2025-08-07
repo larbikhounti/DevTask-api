@@ -1,21 +1,21 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { Transform } from 'class-transformer';
 import { dateRangesEnum } from 'src/tasks/dto/filter-tasks.dto';
 
-@Injectable()
-export class Helpers {
 
-    async hashPassword(password: string): Promise<string> {
-        const saltOrRounds = 10;
-        const hash = await bcrypt.hash(password, saltOrRounds);
-        return hash;
-    }
 
-    async comparePassword(password: string, hash: string): Promise<boolean> {
-        return await bcrypt.compare(password, hash);
-    }
+export async function hashPassword(password: string): Promise<string> {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(password, saltOrRounds);
+    return hash;
+}
 
-   getDateRange(dateRange: string): { from: Date; to: Date } {
+export async function comparePassword(password: string, hash: string): Promise<boolean> {
+    return await bcrypt.compare(password, hash);
+}
+
+export function getDateRange(dateRange: string): { from: Date; to: Date } {
     const now = new Date();
     const from = new Date();
     const to = new Date();
@@ -66,4 +66,15 @@ export class Helpers {
     return { from, to };
 }
 
+
+export function TransformToISODate() {
+    return Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const iso = new Date(value).toISOString();
+            return iso;
+        }
+        return value;
+    });
 }
+
+
