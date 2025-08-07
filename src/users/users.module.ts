@@ -3,10 +3,9 @@ import { UsersService } from './services/users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserController } from './controllers/user.controller';
 import { Exceptions } from 'src/exceptions/exceptions.execptions';
-import { Helpers } from 'src/helpers/helper.helpers';
 
 @Module({
-  providers: [UsersService, PrismaService, Exceptions, Helpers],
+  providers: [UsersService, PrismaService, Exceptions],
   controllers: [UserController],
   exports: [UsersService],
 })
