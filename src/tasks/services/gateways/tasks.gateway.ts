@@ -31,7 +31,7 @@ export class TasksGateway {
 
         const subscription = interval(1000).subscribe(async () => {
             const tasks = await this.cacheManager.get<
-                { id: number; currentTimerSeconds: number }[]
+                { id: number; currentTimerSeconds: number , isTimerEnabled: boolean }[]
             >('tasks-timer');
 
             if (!tasks || tasks.length === 0) {
@@ -40,7 +40,7 @@ export class TasksGateway {
             }
 
             const filteredTasks = tasks.filter((task) =>
-                tasksIds.includes(task.id)
+                tasksIds.includes(task.id) && task.isTimerEnabled
             );
 
             if (filteredTasks.length === 0) {
