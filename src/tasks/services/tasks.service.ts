@@ -232,6 +232,7 @@ export class TasksService {
       await this.cacheManager.set('tasks-timer', updatedTasks.map(task => ({
         id: task.id,
         currentTimerSeconds: task.currentTimerSeconds,
+        isTimerEnabled: task.isTimerEnabled
       })));
       
     } catch (error) {
